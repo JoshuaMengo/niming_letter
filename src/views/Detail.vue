@@ -6,7 +6,12 @@
         <img @click.stop="showBox = !showBox" src="../assets/v2_qkapiz.png" />
         <div v-if="showBox">
           <div class="box">
-            <li v-if="is_receive"  @click.stop="(dialogValue = 'del'), (showBox = false)">删除</li>
+            <li
+              v-if="is_receive"
+              @click.stop="(dialogValue = 'del'), (showBox = false)"
+            >
+              删除
+            </li>
             <li @click.stop="(dialogValue = 'block'), (showBox = false)">
               屏蔽该用户
             </li>
@@ -160,15 +165,17 @@ export default {
     this.lid = this.$router.currentRoute.query.lid;
     this.is_receive =
       this.$router.currentRoute.query.is_receive == 1 ? true : false;
-    console.log(this.$router.currentRoute, "-=-as", this.is_receive);
     this.session = localStorage.getItem("session");
-    this.rLetter();
     this.getLetter();
   },
   async created() {},
   methods: {
     async rLetter() {
-      const res = await readLetter({ session: this.session, lid: this.lid });
+      const res = await readLetter({
+        session: this.session,
+        lid: this.lid,
+        is_receive: this.is_receive,
+      });
       console.log(res);
     },
 
@@ -179,6 +186,12 @@ export default {
         is_receive:
           this.$router.currentRoute.query.is_receive == 1 ? true : false,
       });
+      if (!res.data.has_read && this.is_receive) {
+        this.rLetter();
+      }else if(!res.data.has_read_reply && !this.is_receive){
+        this.rLetter();
+      }
+
       this.letterData = res.data;
     },
 
@@ -204,9 +217,9 @@ export default {
           session: this.session,
           lid: that.lid,
           content: that.letterContent,
-          from_uid:that.letterData.from_uid
+          from_uid: that.letterData.from_uid,
         }).then((res) => {
-          that.dialogValue = ''
+          that.dialogValue = "";
           that.$Notify({ type: "success", message: "回复成功" });
           that.rLetter();
           that.getLetter();
@@ -216,11 +229,11 @@ export default {
 
     //屏蔽用户
     block() {
-      let that = this
+      let that = this;
       blockUser({
         lid: that.letterData.lid,
         block_uid: that.letterData.from_uid,
-        session: localStorage.getItem('session'),
+        session: localStorage.getItem("session"),
       }).then((res) => {
         if (res.err_code === 0) {
           that.dialogValue = "isblock";

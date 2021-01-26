@@ -49,7 +49,7 @@ axios.interceptors.response.use(
                 // 如果是session过期，调用静默授权
 
                 var url = encodeURIComponent(window.location.href);
-                var getCodeUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${"wx590ea386b2de4eb8"}&redirect_uri=${url}&response_type=code&scope=snsapi_base&state=1#wechat_redirect`;
+                var getCodeUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${"wx9dedc2998c430f2e"}&redirect_uri=${url}&response_type=code&scope=snsapi_base&state=1#wechat_redirect`;
                 window.location.href = getCodeUrl;
 
                 // var getCodeUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${"wx590ea386b2de4eb8"}&redirect_uri=${'http%3a%2f%2fanonymous.lodidc.cn%2findex.html'}&response_type=code&scope=snsapi_base&state=1#wechat_redirect`;

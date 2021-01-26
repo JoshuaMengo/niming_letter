@@ -84,7 +84,8 @@ export function readLetter(data) {
         url: '/social/read_letter?session=' + data.session,
         method: 'post',
         data: {
-            lid: data.lid
+            lid: data.lid,
+            is_receive:data.is_receive
         }
     })
 }
@@ -98,6 +99,14 @@ export function getLetter(data) {
             lid: data.lid,
             is_receive: data.is_receive
         }
+    })
+}
+
+// ## 更新用户访客记录的权限（进入访客记录的页面时使用）
+export function reduceUnlockNumber(session) {
+    return request({
+        url: '/user/reduce_unlock_number?session=' + session,
+        method: 'post',
     })
 }
 
@@ -220,7 +229,7 @@ export function updateUnlockStatus(data) {
         url: '/user/update_unlock_status?session=' + data.session,
         method: 'post',
         data: {
-            trade_no: data.data,
+            trade_no: data.trade_no,
             flag: data.flag
         }
     })
@@ -322,3 +331,39 @@ export function registerVisitor(data) {
         }
     })
 }
+
+//发送匿名信
+export function sendMessage(data) {
+    return request({
+        url: '/social/send_message?session=' + data.session,
+        method: 'post',
+        data:{
+            phone:data.phone,
+            nickName:data.nickName,
+            content:data.content,
+        }
+    })
+}
+
+export function createSnsCode(data) {
+    return request({
+        url: '/social/create_sns_code?session=' + data.session,
+        method: 'post',
+        data:{
+            phone:data.phone
+        }
+    })
+}
+
+//绑定手机号码
+export function updatePhone(data) {
+    return request({
+        url: '/user/update_phone?session=' + data.session,
+        method: 'post',
+        data:{
+            phone:data.phone,
+            code:data.code
+        }
+    })
+}
+

@@ -1,33 +1,25 @@
 <template>
   <div class="poster">
     <div class="goback" @click="$router.go(-1)">
-      <img src="../assets/wgoback.png" />
+      {{ gobacktext }}
     </div>
 
-    <div class="content" ref="imageWrapper">
+    <div class="content" ref="imageWrapper" v-show="!dialogTableVisible">
       <img src="../assets/v2_qiyjex.png" />
       <div class="nickName">{{ userInfo.nickName }}</div>
       <div class="avatar">
-        <!-- <img src="http://anonymous.lodidc.cn/wechat_image/mmopen/vi_32/lXxWAQct5AqmJfgDrjibcbmgc3icEeCsr2wKArwEjE5rEe4UFEdUSMFI2M2u60wzDeSI3buhJ3YCbB7YicNyXT2cw/132"/> -->
-        <img
-          :src="userInfo.avatarUrl"
-          crossOrigin="anonymous"
-        />
+        <img :src="userInfo.avatarUrl" crossOrigin="anonymous" />
       </div>
       <div id="qrcode_box" ref="code" class="code"></div>
     </div>
 
+    <div class="content" v-show="dialogTableVisible">
+      <img :src="downImg" />
+    </div>
+    <div class="tips">长 按 保 存 海 报 并 分 享 到 朋 友 圈</div>
 
-    <div @click="download()" :style="dialogTableVisible?'opacity: 0;':''" class="create_porster">生成海报</div>
-
-    <div
-      class="dialog"
-      v-show="dialogTableVisible"
-      @click="dialogTableVisible = false"
-    >
-      <img :src="downImg" @click.stop="" />
-      <div class="tips">长 按 保 存 海 报 并 分 享 到 朋 友 圈</div>
-
+    <div class="loading" @click.stop="" v-show="isloading">
+      <van-loading size="30" />
     </div>
   </div>
 </template>
@@ -35,25 +27,28 @@
 <script>
 import QRCode from "qrcodejs2";
 import html2canvas from "html2canvas";
-import {getUser} from '@/api/api'
+import { getUser } from "@/api/api";
 export default {
   data() {
     return {
       downImg: "",
       dialogTableVisible: false,
       userInfo: {},
+      gobacktext: "<返回",
+      isloading:true
     };
   },
- 
+
   async mounted() {
-    await this.getUserInfo()
-    this.Qrcode();
+    await this.getUserInfo();
+    await this.Qrcode();
+    await this.download();
   },
 
   methods: {
-    async getUserInfo(){
-      const res = await getUser(localStorage.getItem("session"))
-      this.userInfo = res.data
+    async getUserInfo() {
+      const res = await getUser(localStorage.getItem("session"));
+      this.userInfo = res.data;
     },
 
     Qrcode() {
@@ -85,11 +80,12 @@ export default {
         width: htmlDom.clientWidth, //dom 原始宽度
         height: htmlDom.clientHeight,
       };
+
       html2canvas(this.$refs.imageWrapper, opts, { allowTaint: true }).then(
         (canvas) => {
           let dataURL = canvas.toDataURL("image/png");
-          this.imgUrl = dataURL;
-          if (this.imgUrl !== "") {
+          this.downImg = dataURL;
+          if (this.downImg !== "") {
             this.dialogTableVisible = true;
           }
         }
@@ -105,10 +101,13 @@ export default {
         html2canvas(that.$refs.imageWrapper, {
           backgroundColor: null,
           scrollY: 0,
+          useCORS: true,
+          taintTest: true, // 在渲染前测试图片
         }).then((canvas) => {
           let dataURL = canvas.toDataURL("image/png");
           that.downImg = dataURL;
           that.dialogTableVisible = true;
+          that.isloading = false
         });
       }, 500);
     },
@@ -124,7 +123,17 @@ export default {
   // right:0;
   // left:0;
   // bottom:0;
-  background: #080808;
+  .loading {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   .create_porster {
     margin: 20px auto;
     color: black;
@@ -137,11 +146,14 @@ export default {
   }
   .goback {
     display: inline-block;
-    margin: 20px 0 15px;
-    img {
-      width: 60px;
-      height: 24px;
-    }
+    width: 60px;
+    height: 30px;
+    background: black;
+    color: white;
+    margin: 15px 0;
+    border-radius: 50px;
+    text-align: center;
+    line-height: 30px;
   }
   & > .content {
     position: relative;
@@ -179,7 +191,11 @@ export default {
       transform: translateX(-50%);
     }
   }
-  
+  .tips {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 14px;
+  }
   & > .dialog {
     position: fixed;
     top: 0;

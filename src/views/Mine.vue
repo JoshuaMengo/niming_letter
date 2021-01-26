@@ -24,10 +24,9 @@
           <div>我发出的</div>
         </div>
 
-        <div
-          class="tabbar_item"
-          @click="islock ? (isDialog = 'pay') : $router.push('/record')"
-        >
+        <div class="tabbar_item" @click="$router.push('/Record')">
+          <!-- @click="islock ? (isDialog = 'pay') : $router.push('/record')" -->
+
           <div>
             <img
               style="width: 43px; height: 28px"
@@ -39,10 +38,10 @@
       </div>
 
       <div>
-        <div class="list_item">
+        <div class="list_item"  @click="isDialog = 'tips'">
           <div>
-            <img src="@/assets/v2_qiwr6k.png" />
-            <div>
+            <img src="@/assets/v2_qiwr6k.png" />开启消息通知
+            <!-- <div>
               <wx-open-launch-weapp
                 id="launch-btn"
                 username="gh_87cd299fd07b"
@@ -62,8 +61,14 @@
                   <button class="btn"> 开启消息通知</button>
                 </script>
               </wx-open-launch-weapp>
-            </div>
+            </div> -->
           </div>
+
+          <div>></div>
+        </div>
+
+        <div class="list_item" @click="$router.push('/howAsk')">
+          <div><img src="@/assets/v2_qmk5nn.png" /> 给好友写信</div>
 
           <div>></div>
         </div>
@@ -78,6 +83,18 @@
           <div><img src="@/assets/v2_qk9210b.png" /> 屏蔽列表</div>
           <div>></div>
         </div>
+
+        <div class="list_item">
+          <div><img src="@/assets/v2_qmibtx.png" /> 常见问题</div>
+          <div>></div>
+        </div>
+
+        <a href="http://nim.lodidc.cn/friendtest/">
+          <div class="list_item">
+            <div><img src="@/assets/v2_qmiijp.png" /> 默契挑战</div>
+            <div>></div>
+          </div>
+        </a>
 
         <div
           class="list_item"
@@ -114,14 +131,18 @@
       </div>
     </div>
 
-    <div
-      class="codeDialog"
-      v-show="isDialog === 'codeDialog'"
-      @click="isDialog = ''"
-    >
+    <div class="codeDialog" v-show="isDialog === 'tips'" @click="isDialog = ''">
       <div class="successContent" @click.stop="">
-        <div><img src="@/assets/_20201116173014.jpg" /></div>
-        <div>长按关注，回复“开启提醒”</div>
+        <div>
+          <img
+            style="height: 155px; width: 155px"
+            src="@/assets/20210125162144.png"
+          />
+        </div>
+        <div style="font-size: 12px">
+          长按关注，回复“开启提醒”<br />
+          若已关注，则无需重复操作
+        </div>
       </div>
     </div>
   </div>
@@ -278,7 +299,7 @@ export default {
         body: data.body,
       };
       const result = await createPay(parama);
-      
+
       if (result) {
         let wxpay = new Promise((resolve, reject) => {
           wx.chooseWXPay({
@@ -416,6 +437,9 @@ export default {
       }
     }
     & > div:nth-child(2) {
+      a{
+        color:#2c3e50;
+      }
       .list_item {
         display: flex;
         justify-content: space-between;

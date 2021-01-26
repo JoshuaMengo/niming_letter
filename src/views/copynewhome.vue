@@ -1,14 +1,14 @@
 <template>
-  <div class="home">
+  <div class="home" @click.stop="showDialog = true">
     <div class="header">
       <div>
         <img :src="require('../assets/headerLogo.png')" />
       </div>
-      <div class="avatar" @click="enterMine()">
+      <div class="avatar">
         <div>我的</div>
-        <div>
+        <!-- <div>
           <img :src="userInfo ? userInfo.avatarUrl ? userInfo.avatarUrl :'' : ''" />
-        </div>
+        </div> -->
       </div>
     </div>
 
@@ -22,14 +22,14 @@
             :class="
               $store.state.activeTabbarIndex == item.value ? 'active' : ''
             "
-            @click="changeTabbar(item.value)"
+            
           >
             {{ item.label }}
           </div>
         </div>
       </div>
 
-      <div class="invitation_btn" @click="$router.push('/poster')">
+      <div class="invitation_btn" >
         <img src="../assets/v2_qk8z4j.png" />
         邀请好友来信
       </div>
@@ -46,7 +46,7 @@
             class="list_item"
             v-for="(item, index) in dataList"
             :key="index"
-            @click="enterDetail(item.lid)"
+           
           >
             <div>
               {{ item.content }}
@@ -65,7 +65,10 @@
               </div>
             </div>
 
-            <div v-if="!item.has_read && $store.state.activeTabbarIndex === 1" class="round"></div>
+            <div
+              v-if="!item.has_read && $store.state.activeTabbarIndex === 1"
+              class="round"
+            ></div>
           </div>
         </van-list>
       </div>
@@ -78,13 +81,37 @@
       </div>
     </div>
 
-    <div class="loading" v-show="$store.state.showLoading">
+    <!-- <div class="loading" v-show="$store.state.showLoading">
       <div>
         <img src="@/assets/v2_qkypb6.gif" />
         <div>加载中...</div>
       </div>
       <div>
         <img src="@/assets/v2_qkypfr.png" />
+      </div>
+    </div> -->
+
+    <div class="dialog" @click.stop="showDialog = false" v-show="showDialog">
+      <div class="content" @click.stop="">
+        <div>请在微信中打开</div>
+        <div class="item">
+          <div class="title">方式一 <br />保存下方二维码，扫码进入</div>
+          <img src="@/assets/20210122181246.png" />
+        </div>
+        <div class="item">
+          <div class="title">方式二 <br />复制下方链接，在微信中打开</div>
+          <div class="link">
+            <span ref="copyContainer"
+              >http://anonymous.taodaibuy.com/niming_letter/setphone</span
+            >
+          </div>
+          <div
+            @click="onCopy"
+            style="color: #3e7dff; font-size: 14px; text-align: center"
+          >
+            一键复制
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -111,78 +138,85 @@ export default {
       listIndex: 0,
       loading: false,
       finished: false,
+      showDialog: false,
     };
   },
   beforeMount() {},
 
-  async mounted() {
-    //获取路由中的id
-    // this.uid = this.$router.query.id
-    let code = this.getUrlCode().code;
-    if (
-      !localStorage.getItem("session") ||
-      localStorage.getItem("session") === undefined
-    ) {
-      if (code) {
-        //已经通过非静默授权重定向过来
-        login(code).then((result) => {
-          //设置uid和session到localstorage并用返回到的session继续请求
-          localStorage.setItem("session", result.data.session);
-          localStorage.setItem("uid", result.data.uid);
-          if (this.$store.state.showLoading) {
-            setTimeout(() => {
-              this.$store.commit("changeShowLoading");
-            }, 1000);
-            this.getUserInfo(result.data.session);
-          }
+  // async mounted() {
+  //   //获取路由中的id
+  //   // this.uid = this.$router.query.id
+  //   let code = this.getUrlCode().code;
+  //   if (
+  //     !localStorage.getItem("session") ||
+  //     localStorage.getItem("session") === undefined
+  //   ) {
+  //     if (code) {
+  //       //已经通过非静默授权重定向过来
+  //       login(code).then((result) => {
+  //         //设置uid和session到localstorage并用返回到的session继续请求
+  //         localStorage.setItem("session", result.data.session);
+  //         localStorage.setItem("uid", result.data.uid);
+  //         if (this.$store.state.showLoading) {
+  //           setTimeout(() => {
+  //             this.$store.commit("changeShowLoading");
+  //           }, 1000);
+  //           this.getUserInfo(result.data.session);
+  //         }
 
-          if (this.$route.query.index) {
-            this.$route.query.index == 1
-              ? this.getReceivedList(result.data.session)
-              : this.getSendList(result.data.session);
-          } else {
-            this.$store.state.activeTabbarIndex == 1
-              ? this.getReceivedList(result.data.session)
-              : this.getSendList(result.data.session);
-          }
-        });
-        return; //return掉 不再走授权
-      }
-      //非静默授权
-      var url = encodeURIComponent(window.location.href);
-      var getCodeUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9dedc2998c430f2e&redirect_uri=${url}&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect`;
-      window.location.href = getCodeUrl;
-    } else {
-      // 别的业务逻辑
-      if (this.$store.state.showLoading) {
-        setTimeout(() => {
-          this.$store.commit("changeShowLoading");
-        }, 1000);
-      }
+  //         if (this.$route.query.index) {
+  //           this.$route.query.index == 1
+  //             ? this.getReceivedList(result.data.session)
+  //             : this.getSendList(result.data.session);
+  //         } else {
+  //           this.$store.state.activeTabbarIndex == 1
+  //             ? this.getReceivedList(result.data.session)
+  //             : this.getSendList(result.data.session);
+  //         }
+  //       });
+  //       return; //return掉 不再走授权
+  //     }
+  //     //非静默授权
+  //     var url = encodeURIComponent(window.location.href);
+  //     var getCodeUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9dedc2998c430f2e&redirect_uri=${url}&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect`;
+  //     window.location.href = getCodeUrl;
+  //   } else {
+  //     // 别的业务逻辑
+  //     if (this.$store.state.showLoading) {
+  //       setTimeout(() => {
+  //         this.$store.commit("changeShowLoading");
+  //       }, 1000);
+  //       this.getUserInfo(localStorage.getItem('session'));
+  //     }
 
-      this.getUserInfo(localStorage.getItem('session'));
+  //     if (this.$route.query.index) {
+  //       this.$route.query.index == 1
+  //         ? this.getReceivedList(localStorage.getItem('session'))
+  //         : this.getSendList(localStorage.getItem('session'));
+  //     } else {
+  //       this.$store.state.activeTabbarIndex == 1
+  //         ? this.getReceivedList(localStorage.getItem('session'))
+  //         : this.getSendList(localStorage.getItem('session'));
+  //     }
+  //   }
+  //   if (this.$route.query.index) {
+  //     console.log(this.$route.query.index, "-----");
+  //     this.$store.commit("changeTabbarIndex", this.$route.query.index);
+  //   }
+  // },
 
-      if (this.$route.query.index) {
-        this.$route.query.index == 1
-          ? this.getReceivedList(localStorage.getItem('session'))
-          : this.getSendList(localStorage.getItem('session'));
-      } else {
-        this.$store.state.activeTabbarIndex == 1
-          ? this.getReceivedList(localStorage.getItem('session'))
-          : this.getSendList(localStorage.getItem('session'));
-      }
-    }
-    if (this.$route.query.index) {
-      console.log(this.$route.query.index, "-----");
-      this.$store.commit("changeTabbarIndex", this.$route.query.index);
-    }
-  },
-
-  async created() {
-   
-  },
+  async created() {},
 
   methods: {
+    onCopy() {
+      let container = this.$refs.copyContainer;
+      this.$copyText(
+        "http://anonymous.taodaibuy.com/niming_letter/setphone",
+        container
+      );
+      this.$Notify({ type: "success", message: "复制成功" });
+    },
+
     async getUserInfo(session) {
       const res = await getUser(session);
       this.userInfo = res.data;
@@ -236,13 +270,13 @@ export default {
       if (res.data.list.length <= 0) {
         this.finished = true;
       } else {
-        this.dataList.push(...res.data.list)
+        this.dataList.push(...res.data.list);
       }
     },
 
     changeTabbar(index) {
       this.$store.commit("changeTabbarIndex", index);
-      let session = localStorage.getItem('session')
+      let session = localStorage.getItem("session");
       // this.checkTabbar = index;
       this.listIndex = 0;
       index == 1 ? this.getReceivedList(session) : this.getSendList(session);
@@ -269,6 +303,74 @@ export default {
 .home {
   flex: 1;
   background: #f4f5f5;
+
+  .dialog {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: white;
+    font-size: 15px;
+    z-index: 999;
+    & > .code {
+      height: 175px;
+      width: 175px;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 15px;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+    .content {
+      color: black;
+      background: white;
+      width: 305px;
+      padding-bottom: 20px;
+      border-radius: 10px;
+      & > div:nth-child(1) {
+        font-size: 15px;
+        font-weight: bold;
+        height: 66px;
+        line-height: 66px;
+        text-align: center;
+        border-bottom: 1px solid rgba(244, 245, 245, 100);
+      }
+      & > .item {
+        margin-top: 20px;
+        line-height: 22px;
+        & .title {
+          font-size: 14px;
+          margin-bottom: 15px;
+          text-align: center;
+        }
+        & .link {
+          padding: 10px;
+          width: 235px;
+          background: #f4f5f5;
+          word-break: break-all;
+          color: #3e7dff;
+          border-radius: 5px;
+          margin: 0 auto 5px;
+          overflow: hidden;
+          font-size: 12px;
+        }
+        & img {
+          display: block;
+          margin: 0 auto;
+          height: 105px;
+          width: 105px;
+        }
+      }
+    }
+  }
   .header {
     background: url("../assets/headerBg.jpg");
     height: 96px;
@@ -304,7 +406,7 @@ export default {
       }
     }
   }
-  .content {
+  & > .content {
     border-radius: 20px 20px 0px 0px;
     background: #f4f5f5;
     transform: translatey(-20px);

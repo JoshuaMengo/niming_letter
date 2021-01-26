@@ -36,34 +36,9 @@
       </div>
     </div>
 
-    <div class="dialog successDialog" @click="isDialog=false" v-show="isDialog === 'success'">
-      <div class="tipsBtn">
-        <img src="@/assets/v2_qlbphv.png" />
-        <div class="text">发送成功</div>
-        <div class="weapp" @click.stop="">
-          <wx-open-launch-weapp
-            id="launch-btn"
-            username="gh_87cd299fd07b"
-            path='pages/web_view/web_view.html?url=https://mp.weixin.qq.com/s/JII8GbuujOewsLyQtb2XFA'
-          >
-            <script type="text/wxtag-template">
-              <style>
-               .btn {
-                  width: 130px;
-                  height: 38px;
-                  line-height: 38px;
-                  border-radius: 25px;
-                  background-color: rgba(16, 16, 16, 100);
-                  text-align: center;
-                  color:white;
-                  font-size:13px;
-               }
-              </style>
-              <button class="btn">开启回复提醒</button>
-            </script>
-          </wx-open-launch-weapp>
-        </div>
-      </div>
+    <div class="dialog successDialog" @click="isDialog=''" v-show="isDialog ==='success'">
+        <img @click.stop="" src="@/assets/20210125162144.png" style="height:135px;width:135px;margin-bottom:10px" />
+        <div style="font-size:12px">长按关注，开启回复提醒</div>
     </div>
 
     <div class="footer_text">
@@ -123,7 +98,7 @@ export default {
       }
       //非静默授权
       var url = encodeURIComponent(window.location.href);
-      var getCodeUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx590ea386b2de4eb8&redirect_uri=${url}&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect`;
+      var getCodeUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9dedc2998c430f2e&redirect_uri=${url}&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect`;
       window.location.href = getCodeUrl;
     } else {
       // 已经有session,用localstorage的session来请求 别的业务逻辑
@@ -237,7 +212,8 @@ export default {
         sendLetter(data).then((res) => {
           if (res.err_code === 0) {
             this.isDialog = "success";
-            this.content = ''
+            this.letterContent = ''
+            this.$Notify({ type: 'success', message: '发送成功' });
           }
         });
       }
@@ -249,7 +225,6 @@ export default {
 <style lang="less" scoped>
 .edit_container {
   overflow-y: auto;
-  // height: 77px;
   background: url("../assets/headerBg.jpg");
   padding: 0 25px 25px;
   color: white;
