@@ -75,6 +75,7 @@ export default {
     //localstorage中也没有session 首次进入
     this.uid = this.getUrlCode().id;
     let code = this.getUrlCode().code;
+    let isnew = this.getUrlCode().isnew;
     // if (code) return;
     if (
       !localStorage.getItem("session") ||
@@ -82,10 +83,15 @@ export default {
     ) {
       if (code) {
         //已经通过非静默授权重定向过来
-        login(code).then((result) => {
+        login({
+          code: code,
+          isNew: isnew ? true : false,
+        }).then((result) => {
           //设置uid和session到localstorage并用返回到的session继续请求
           localStorage.setItem("session", result.data.session);
           localStorage.setItem("uid", result.data.uid);
+          localStorage.setItem('first_login',result.data.first_login)
+
           // this.getDataDetail(this.$route.query.qid, result.data.session);
           // this.readLetter(result.data.session, result.data.uid);
           this.getBlock(result.data.session);

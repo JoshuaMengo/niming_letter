@@ -4,7 +4,7 @@
       <div>
         <img :src="require('../assets/headerLogo.png')" />
       </div>
-      <div class="avatar" >
+      <div class="avatar">
         <div>我的</div>
         <!-- <div>
           <img :src="userInfo ? userInfo.avatarUrl ? userInfo.avatarUrl :'' : ''" />
@@ -28,19 +28,30 @@
         </div>
       </div>
 
-      <div class="invitation_btn" >
+      <div class="invitation_btn">
         <img src="../assets/v2_qk8z4j.png" />
         邀请好友来信
       </div>
 
-      <div v-show="dataList.length > 0">
+      <div class="list_item">
+        <div>{{ datacontent.content }}</div>
+        <div>
+          <div style="color: rgba(0, 0, 0); opacity: 0.5">
+            {{ datacontent.create_time }}
+          </div>
+          <div>未读</div>
+        </div>
+
+        <div class="round"></div>
+      </div>
+
+      <!-- <div v-show="dataList.length > 0">
         <van-list
           v-model="loading"
           :finished="finished"
           finished-text="没有更多了"
           @load="onLoad"
         >
-          <!-- <van-cell v-for="item in list" :key="item" :title="item" /> -->
           <div
             class="list_item"
             v-for="(item, index) in dataList"
@@ -70,14 +81,14 @@
             ></div>
           </div>
         </van-list>
-      </div>
-      <div v-show="dataList.length <= 0" class="noContent">
+      </div> -->
+      <!-- <div v-show="dataList.length <= 0" class="noContent">
         <img
           src="../assets/v2_qk8ywm.png"
           style="height: 135px; width: 135px"
         />
         <div>未收到来信</div>
-      </div>
+      </div> -->
     </div>
 
     <!-- <div class="loading" v-show="$store.state.showLoading">
@@ -101,7 +112,7 @@
           <div class="title">方式二 <br />保存下方二维码，扫码进入</div>
           <div class="link">
             <span ref="copyContainer"
-              >http://anonymous.taodaibuy.com/niming_letter/home</span
+              >http://anonymous.taodaibuy.com/niming_letter/home?isnew=1</span
             >
           </div>
           <div
@@ -123,7 +134,7 @@
 </template>
 
 <script>
-import { queryReceive, querySend, login, getUser } from "@/api/api";
+import { queryReceive, querySend, login, getUser, getExample } from "@/api/api";
 
 export default {
   name: "Home",
@@ -143,7 +154,8 @@ export default {
       listIndex: 0,
       loading: false,
       finished: false,
-      showDialog:false
+      showDialog: false,
+      datacontent: {},
     };
   },
   beforeMount() {},
@@ -210,14 +222,16 @@ export default {
   //   }
   // },
 
-  async created() {},
+  async created() {
+    const res = await getExample();
+    this.datacontent = res.data;
+  },
 
   methods: {
-
     onCopy() {
       let container = this.$refs.copyContainer;
       this.$copyText(
-        "http://anonymous.taodaibuy.com/niming_letter/home",
+        "http://anonymous.taodaibuy.com/niming_letter/home?isnew=1",
         container
       );
       this.$Notify({ type: "success", message: "复制成功" });

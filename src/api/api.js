@@ -9,9 +9,9 @@ import request from '@/api/request'
  */
 
 // 登录
-export function login(code) {
+export function login(data) {
     return request({
-        url: '/user/login?code=' + code,
+        url: '/user/login?code=' + data.code +'&isNew='+data.isNew,
         method: 'get',
     })
 }
@@ -366,4 +366,13 @@ export function updatePhone(data) {
         }
     })
 }
+
+
+export function getExample(data) {
+    return request({
+        url: '/social/get_example',
+        method: 'post',
+    })
+}
+
 

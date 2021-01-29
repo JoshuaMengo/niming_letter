@@ -7,7 +7,11 @@
       <div class="avatar" @click="enterMine()">
         <div>我的</div>
         <div>
-          <img :src="userInfo ? userInfo.avatarUrl ? userInfo.avatarUrl :'' : ''" />
+          <img
+            :src="
+              userInfo ? (userInfo.avatarUrl ? userInfo.avatarUrl : '') : ''
+            "
+          />
         </div>
       </div>
     </div>
@@ -27,6 +31,15 @@
             {{ item.label }}
           </div>
         </div>
+      </div>
+
+      <div class="guide" v-show="isFirst">
+        <div><img src="@/assets/v2_qnlep2.gif" /></div>
+        <div>
+          <div>如果没有顾虑，Ta会对你说什么呢？</div>
+          <div>点击生成海报，分享到朋友圈坐等来信↓</div>
+        </div>
+        <div @click="closeGuide()">X</div>
       </div>
 
       <div class="invitation_btn" @click="$router.push('/poster')">
@@ -65,7 +78,10 @@
               </div>
             </div>
 
-            <div v-if="!item.has_read && $store.state.activeTabbarIndex === 1" class="round"></div>
+            <div
+              v-if="!item.has_read && $store.state.activeTabbarIndex === 1"
+              class="round"
+            ></div>
           </div>
         </van-list>
       </div>
@@ -111,6 +127,7 @@ export default {
       listIndex: 0,
       loading: false,
       finished: false,
+      isFirst: true,
     };
   },
   beforeMount() {},
@@ -119,19 +136,26 @@ export default {
     //获取路由中的id
     // this.uid = this.$router.query.id
     let code = this.getUrlCode().code;
+    let isnew = this.getUrlCode().isnew;
     if (
       !localStorage.getItem("session") ||
       localStorage.getItem("session") === undefined
     ) {
       if (code) {
         //已经通过非静默授权重定向过来
-        login(code).then((result) => {
+        login({
+          code: code,
+          isNew: isnew ? true : false,
+        }).then((result) => {
           //设置uid和session到localstorage并用返回到的session继续请求
           localStorage.setItem("session", result.data.session);
           localStorage.setItem("uid", result.data.uid);
+          localStorage.setItem("first_login", result.data.first_login);
           if (this.$store.state.showLoading) {
             setTimeout(() => {
               this.$store.commit("changeShowLoading");
+              this.isFirst =
+            localStorage.getItem("first_login") === "true" ? true : false;
             }, 1000);
             this.getUserInfo(result.data.session);
           }
@@ -157,19 +181,21 @@ export default {
       if (this.$store.state.showLoading) {
         setTimeout(() => {
           this.$store.commit("changeShowLoading");
+          this.isFirst =
+            localStorage.getItem("first_login") === "true" ? true : false;
         }, 1000);
       }
 
-      this.getUserInfo(localStorage.getItem('session'));
+      this.getUserInfo(localStorage.getItem("session"));
 
       if (this.$route.query.index) {
         this.$route.query.index == 1
-          ? this.getReceivedList(localStorage.getItem('session'))
-          : this.getSendList(localStorage.getItem('session'));
+          ? this.getReceivedList(localStorage.getItem("session"))
+          : this.getSendList(localStorage.getItem("session"));
       } else {
         this.$store.state.activeTabbarIndex == 1
-          ? this.getReceivedList(localStorage.getItem('session'))
-          : this.getSendList(localStorage.getItem('session'));
+          ? this.getReceivedList(localStorage.getItem("session"))
+          : this.getSendList(localStorage.getItem("session"));
       }
     }
     if (this.$route.query.index) {
@@ -178,11 +204,16 @@ export default {
     }
   },
 
-  async created() {
-   
-  },
+  async created() {},
 
   methods: {
+    closeGuide() {
+      if (this.isFirst === true) {
+        localStorage.setItem("first_login", false);
+        this.isFirst = false;
+      }
+    },
+
     async getUserInfo(session) {
       const res = await getUser(session);
       this.userInfo = res.data;
@@ -236,13 +267,13 @@ export default {
       if (res.data.list.length <= 0) {
         this.finished = true;
       } else {
-        this.dataList.push(...res.data.list)
+        this.dataList.push(...res.data.list);
       }
     },
 
     changeTabbar(index) {
       this.$store.commit("changeTabbarIndex", index);
-      let session = localStorage.getItem('session')
+      let session = localStorage.getItem("session");
       // this.checkTabbar = index;
       this.listIndex = 0;
       index == 1 ? this.getReceivedList(session) : this.getSendList(session);
@@ -329,6 +360,38 @@ export default {
           font-weight: bold;
           color: #101010;
         }
+      }
+    }
+    & > .guide {
+      display: flex;
+      align-items: center;
+      margin-top: 30px;
+      & > div:nth-child(1) {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin-right: 8px;
+        & > img {
+          height: 100%;
+          width: 100%;
+        }
+      }
+      & > div:nth-child(2) {
+        flex: 1;
+        & > div:nth-child(1) {
+          color: rgba(16, 16, 16, 100);
+          font-weight: bold;
+          font-size: 15px;
+        }
+        & > div:nth-child(2) {
+          color: rgba(16, 16, 16, 0.5);
+          font-size: 13px;
+        }
+      }
+      & > div:nth-child(3) {
+        color: rgba(16, 16, 16, 0.35);
+        font-size: 14px;
       }
     }
     .invitation_btn {
