@@ -38,7 +38,7 @@
       </div>
 
       <div>
-        <div class="list_item"  @click="isDialog = 'tips'">
+        <div class="list_item" @click="isDialog = 'tips'">
           <div>
             <img src="@/assets/v2_qiwr6k.png" />开启消息通知
             <!-- <div>
@@ -84,10 +84,84 @@
           <div>></div>
         </div>
 
-        <div class="list_item">
+        <!-- <div class="list_item">
           <div><img src="@/assets/v2_qmibtx.png" /> 常见问题</div>
           <div>></div>
+        </div> -->
+
+        <div class="list_item">
+          <div>
+            <img class="weappImg" src="@/assets/v2_qmibtx.png" />
+            <div class="flex:1;">
+              <wx-open-launch-weapp
+                id="launch-btn"
+                username="gh_87cd299fd07b"
+                path="pages/web_view/web_view.html?url=https://mp.weixin.qq.com/s/hHqzplRjPYERUmzFyzzGVw"
+              >
+                <script type="text/wxtag-template">
+                      <style>
+                        .weappContant{
+                          display:flex;
+                          justify-content:space-between;
+                          align-items:center;
+                          height:60px;
+                          font-size: 14px;
+                          width:305px;
+                        }
+                        .btn {
+                          border:0;
+                          font-size: 14px;
+                          padding:0;
+                          background:#f4f5f5;
+                          color:#2c3e50;
+                          height:60px;
+                          line-height:60px;
+                          flex:1;
+                        }
+                      </style>
+                      <div class="weappContant">
+                        <div class="btn"> 开启消息通知</div>
+                        <div>></div>
+                      </div>
+                </script>
+              </wx-open-launch-weapp>
+            </div>
+          </div>
         </div>
+
+        <!-- <div class="list_item">
+          <div style="height: 100%; width: 100%">
+            <wx-open-launch-weapp
+              id="launch-btn"
+              username="gh_87cd299fd07b"
+              path="pages/web_view/web_view.html?url=https://mp.weixin.qq.com/s/hHqzplRjPYERUmzFyzzGVw"
+            >
+              <script type="text/wxtag-template">
+                <style>
+                 .weappContant{
+                    display: flex;
+                    justify-content: space-between;
+                    height:60px;
+                    
+                    align-items: center;
+                    font-size: 14px;
+                    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+                 }
+                 .weappImg{
+                    height: 20px;
+                    width: 20px;
+                    margin-right: 10px;
+                 }
+                </style>
+                <div class="weappContant">
+                  <div>常见问题</div>
+                  <div>></div>
+                </div>
+              </script>
+            </wx-open-launch-weapp>
+          </div>
+          <img class="weappImg" src="@/assets/v2_qmibtx.png" /> 
+        </div> -->
 
         <a href="http://nim.lodidc.cn/friendtest/">
           <div class="list_item">
@@ -437,8 +511,8 @@ export default {
       }
     }
     & > div:nth-child(2) {
-      a{
-        color:#2c3e50;
+      a {
+        color: #2c3e50;
       }
       .list_item {
         display: flex;
@@ -454,6 +528,7 @@ export default {
         img {
           height: 20px;
           width: 20px;
+
           margin-right: 10px;
         }
       }
