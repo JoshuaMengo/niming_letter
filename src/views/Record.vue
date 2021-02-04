@@ -25,13 +25,14 @@
       <div class="content" @click.stop="">
         <div>谁看过我</div>
         <div class="operation_container">
-          <div @click="pay({ fee: 200, body: 'once' })">
+          <div @click="pay({ fee: 288, body: 'once' })">
             <div><img src="@/assets/v2_qkccl0.png" />偷看一次</div>
-            <div>￥<span>2</span></div>
+            <div>￥<span>2.88</span></div>
           </div>
-          <div @click="pay({ fee: 1500, body: 'vip' })">
+          <div @click="pay({ fee: 1600, body: 'vip' })">
             <div><img src="@/assets/v2_qkccl8.png" />永久解锁</div>
-            <div>￥<span>15</span><del>￥30</del></div>
+            <div>￥<span>16</span><del>￥32</del></div>
+            <img src="@/assets/v2_qiyfv6.png"/>
           </div>
         </div>
         <div class="tips">
@@ -248,15 +249,24 @@ html {
           display: flex;
           flex-direction: column;
           align-items: center;
+          position: relative;
           justify-content: space-around;
           & > div:nth-child(1) {
             display: flex;
             align-items: center;
-            img {
+            &> img {
               width: 18px;
               height: 18px;
               margin-right: 3px;
             }
+          }
+          &>img{
+            height: 25px;
+            width: 55px;
+            position:absolute;
+            top:0;
+            right:0;
+            transform: translateY(-50%);
           }
           span {
             font-weight: bold;
@@ -298,7 +308,7 @@ html {
     }
   }
   & > .recordList {
-    padding: 0 20px;
+    padding: 0 20px 50px;
     & > .record_iem {
       height: 70px;
       display: flex;

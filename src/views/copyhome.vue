@@ -125,7 +125,7 @@
 
         <div class="item">
           <div class="title">
-            方式三 <br />搜索公众号“朋友提问箱Pro”获取入口
+            方式三 <br />搜索公众号“朋友信箱pro”获取入口
           </div>
         </div>
       </div>

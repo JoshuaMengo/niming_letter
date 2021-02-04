@@ -92,37 +92,37 @@
         <div class="list_item">
           <div>
             <img class="weappImg" src="@/assets/v2_qmibtx.png" />
-            <div class="flex:1;">
+            <div>
               <wx-open-launch-weapp
                 id="launch-btn"
-                username="gh_87cd299fd07b"
-                path="pages/web_view/web_view.html?url=https://mp.weixin.qq.com/s/hHqzplRjPYERUmzFyzzGVw"
+                username="gh_1eeeae8628d0"
+                path="pages/webview/webview?id=1"
               >
                 <script type="text/wxtag-template">
-                      <style>
-                        .weappContant{
-                          display:flex;
-                          justify-content:space-between;
-                          align-items:center;
-                          height:60px;
-                          font-size: 14px;
-                          width:305px;
-                        }
-                        .btn {
-                          border:0;
-                          font-size: 14px;
-                          padding:0;
-                          background:#f4f5f5;
-                          color:#2c3e50;
-                          height:60px;
-                          line-height:60px;
-                          flex:1;
-                        }
-                      </style>
-                      <div class="weappContant">
-                        <div class="btn"> 开启消息通知</div>
-                        <div>></div>
-                      </div>
+                  <style>
+                    .weappContant {
+                      display:flex;
+                      justify-content:space-between;
+                      align-items:center;
+                      height:60px;
+                      font-size: 14px;
+                      width:305px;
+                    }
+                    .btn {
+                      border:0;
+                      font-size: 14px;
+                      padding:0;
+                      background:#f4f5f5;
+                      color:#2c3e50;
+                      height:60px;
+                      line-height:60px;
+                      flex:1;
+                    }
+                  </style>
+                  <div class="weappContant">
+                    <div class="btn"> 开启消息通知</div>
+                    <div>></div>
+                  </div>
                 </script>
               </wx-open-launch-weapp>
             </div>
@@ -524,12 +524,15 @@ export default {
         & > div:nth-child(1) {
           display: flex;
           align-items: center;
-        }
-        img {
-          height: 20px;
-          width: 20px;
-
-          margin-right: 10px;
+          & > div {
+            height: 60px;
+            flex: 1;
+          }
+          img {
+            height: 20px;
+            width: 20px;
+            margin-right: 10px;
+          }
         }
       }
     }
