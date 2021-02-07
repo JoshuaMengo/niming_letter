@@ -72,7 +72,7 @@
                 >
                 <span
                   style="color: #eb838d"
-                  v-if="item.have_reply && !item.has_read_reply"
+                  v-if="item.have_reply && !item.has_read_reply && $store.state.activeTabbarIndex === 2"
                   >新回复</span
                 >
               </div>
@@ -160,8 +160,7 @@ export default {
                 localStorage.getItem("first_login") === "true" ? true : false;
             }, 1000);
             this.getUserInfo(result.data.session);
-          this.getWxConfig(result.data.session);
-
+            this.getWxConfig(result.data.session);
           }
 
           if (this.$route.query.index) {

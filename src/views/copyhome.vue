@@ -123,11 +123,7 @@
           </div>
         </div>
 
-        <div class="item">
-          <div class="title">
-            方式三 <br />搜索公众号“朋友信箱pro”获取入口
-          </div>
-        </div>
+       
       </div>
     </div>
   </div>
@@ -352,7 +348,7 @@ export default {
       color: black;
       background: white;
       width: 305px;
-      height: 511px;
+      padding-bottom: 20px;
       border-radius: 10px;
       & > div:nth-child(1) {
         font-size: 15px;

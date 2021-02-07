@@ -120,13 +120,14 @@
                     }
                   </style>
                   <div class="weappContant">
-                    <div class="btn"> 开启消息通知</div>
+                    <div class="btn"> 常见问题</div>
                     <div>></div>
                   </div>
                 </script>
               </wx-open-launch-weapp>
             </div>
           </div>
+          <div style="font-size: 14px;position:absolute;right:0;top:50%;transform:translateX(-50%)">></div>
         </div>
 
         <!-- <div class="list_item">
@@ -521,6 +522,7 @@ export default {
         align-items: center;
         font-size: 14px;
         border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        position:relative;
         & > div:nth-child(1) {
           display: flex;
           align-items: center;
