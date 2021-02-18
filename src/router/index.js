@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
-import { login, updateDetail, getUser } from '@/api/api.js'
+// import { login, updateDetail, getUser } from '@/api/api.js'
 import { getUrlCode } from '@/utils/index.js'
 import { baselogin } from '@/api/api'
 Vue.use(VueRouter)

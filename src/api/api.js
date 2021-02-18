@@ -290,6 +290,16 @@ export function getFeedback(data){
     })
 }
 
+export function searchUser(data){
+    return request({
+        url:'/wxpay/search_user?session='+data.session,
+        method:'post',
+        data:{
+            uid:data.uid,
+        }
+    })
+}
+
 
 // ## 判断是否被拉黑
 export function judgeBlock(data){

@@ -32,7 +32,7 @@
           <div @click="pay({ fee: 1600, body: 'vip' })">
             <div><img src="@/assets/v2_qkccl8.png" />永久解锁</div>
             <div>￥<span>16</span><del>￥32</del></div>
-            <img src="@/assets/v2_qiyfv6.png"/>
+            <img src="@/assets/v2_qiyfv6.png" />
           </div>
         </div>
         <div class="tips">
@@ -60,14 +60,14 @@ export default {
     return {
       list: [],
       userInfo: {
-        is_lock: true,
+        is_lock: true
       },
-      showDialog: "",
+      showDialog: ""
     };
   },
   async created() {
     await this.getList();
-    await this.getUserInfo();
+    await this.newgetUserInfo();
     this.getWxConfig();
   },
   methods: {
@@ -76,6 +76,16 @@ export default {
       const res = await queryVisitor({ session: session, page_index: 0 });
       console.log(res);
       this.list = res.data.list;
+    },
+
+    async newgetUserInfo() {
+      const res = await getUser(localStorage.getItem("session"));
+      this.userInfo = res.data;
+      const unlock_number = this.userInfo.unlock_number || 0
+      this.introduce = res.data.introduce;
+      if (unlock_number >= 1) {
+        reduceUnlockNumber(localStorage.getItem("session"));
+      }
     },
 
     async getUserInfo() {
@@ -90,9 +100,9 @@ export default {
       // let url = encodeURIComponent(window.location.href);
       let data = {
         wechaturl: window.location.href,
-        session: localStorage.getItem("session"),
+        session: localStorage.getItem("session")
       };
-      getConfig(data).then((res) => {
+      getConfig(data).then(res => {
         (that.appId = res.data.appId),
           wx.config({
             debug: false,
@@ -103,14 +113,14 @@ export default {
             jsApiList: [
               "chooseWXPay",
               "updateTimelineShareData",
-              "hideMenuItems",
+              "hideMenuItems"
             ],
-            openTagList: ["wx-open-launch-weapp"],
+            openTagList: ["wx-open-launch-weapp"]
           });
-        wx.ready(function () {
+        wx.ready(function() {
           console.log("成功隐藏");
           wx.hideMenuItems({
-            menuList: ["menuItem:share:appMessage", "menuItem:share:timeline"], // 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
+            menuList: ["menuItem:share:appMessage", "menuItem:share:timeline"] // 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
           });
           // wx.updateTimelineShareData({
           //   title: "分享", // 分享标题
@@ -126,7 +136,7 @@ export default {
           // });
           // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中
         });
-        wx.error(function (res) {
+        wx.error(function(res) {
           console.log(res);
           // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名
         });
@@ -139,10 +149,10 @@ export default {
       let parama = {
         session: localStorage.getItem("session"),
         total_fee: data.fee,
-        body: data.body,
+        body: data.body
       };
       const result = await createPay(parama);
-      console.log(result,'0-a0sdas')
+      console.log(result, "0-a0sdas");
       if (result) {
         let wxpay = new Promise((resolve, reject) => {
           wx.chooseWXPay({
@@ -152,10 +162,10 @@ export default {
             package: result.data.package, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
             signType: result.data.signType, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
             paySign: result.data.paySign, // 支付签名
-            success: function (res) {
+            success: function(res) {
               resolve("支付成功");
               // 支付成功后的回调函数
-            },
+            }
           });
         });
 
@@ -164,7 +174,7 @@ export default {
           await updateUnlockStatus({
             trade_no: result.data.trade_no,
             flag: data.body,
-            session: localStorage.getItem("session"),
+            session: localStorage.getItem("session")
           });
           that.showDialog = "";
           that.getUserInfo();
@@ -172,15 +182,15 @@ export default {
           this.$Dialog
             .alert({
               title: "",
-              message: "支付成功",
+              message: "支付成功"
             })
             .then(() => {
               // on close
             });
         });
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -254,18 +264,18 @@ html {
           & > div:nth-child(1) {
             display: flex;
             align-items: center;
-            &> img {
+            & > img {
               width: 18px;
               height: 18px;
               margin-right: 3px;
             }
           }
-          &>img{
+          & > img {
             height: 25px;
             width: 55px;
-            position:absolute;
-            top:0;
-            right:0;
+            position: absolute;
+            top: 0;
+            right: 0;
             transform: translateY(-50%);
           }
           span {

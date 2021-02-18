@@ -5,7 +5,7 @@
     </div>
 
     <div class="input_container">
-      <input v-model="fid" />
+      <input v-model="uid" />
       <div class="commit_btn" @click="getFb()">确定</div>
     </div>
 
@@ -37,19 +37,27 @@
 </template>
 
 <script>
-import { getFeedback, handleFeedback } from "@/api/api";
+import { getFeedback, handleFeedback ,searchUser} from "@/api/api";
 export default {
   data() {
     return {
       fid: "",
       detailData: {},
+      uid:''
     };
   },
 
   mounted() {
     if (this.$route.query.fid) {
       this.fid = this.$route.query.fid;
-      this.getFb();
+      // this.getFb();
+      let data={
+        session:localStorage.getItem("session"),
+        fid: this.$route.query.fid
+      }
+      getFeedback(data).then(res=>{
+        this.detailData = res.data;
+      })
     }
   },
 
@@ -64,9 +72,9 @@ export default {
       }
       let data = {
         session: session,
-        fid: this.fid,
+        uid: this.uid,
       };
-      getFeedback(data).then((res) => {
+      searchUser(data).then((res) => {
         console.log(res);
         this.detailData = res.data;
       });
@@ -89,6 +97,7 @@ export default {
             uid: that.detailData.uid,
             fid: that.detailData.fid,
             flag: flag,
+            session:localStorage.getItem("session")
           };
           handleFeedback(data).then((res) => {
             console.log(res);
